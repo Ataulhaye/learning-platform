@@ -1,10 +1,10 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginForm from './components/auth/LoginForm';
-import RegisterForm from './components/auth/RegisterForm';
+import LoginForm from './components/authorization/LoginForm';
+import RegisterForm from './components/authorization/RegisterForm';
+import ForgotPassword from './components/authorization/ForgotPassword';
 import { ThemeProvider, createTheme } from '@mui/material';
 import './App.css';
-import HomePage from './components/HomePage';
+import HomePage from './components/Home/HomePage';
 
 const theme = createTheme({
   palette: {
@@ -25,6 +25,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

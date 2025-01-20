@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Box, Button, TextField, Paper, Typography, Alert, Link } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { login } from '../../services/authService';
+import { login } from '../../services/RestAPIService';
 
 const validationSchema = Yup.object({
   email: Yup.string()

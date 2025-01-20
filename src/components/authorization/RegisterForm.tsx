@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Box, Button, TextField, Paper, Typography, Alert, Link } from '@mui/material';
+import { Box, Button, TextField, Paper, Typography, Alert, FormControl, InputLabel, Select, MenuItem, Link } from '@mui/material';
+
 import { Link as RouterLink } from 'react-router-dom';
-import { register } from '../../services/authService';
+import { register } from '../../services/RestAPIService';
+
 
 const validationSchema = Yup.object({
   name: Yup.string().required('Name is required'),
-  email: Yup.string().email('Invalid email address').required('Email is required'),
-  password: Yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
+  email: Yup.string()
+    .email('Invalid email address')
+    .required('Email is required'),
+  password: Yup.string()
+    .required('Password is required')
+    .min(6, 'Password must be at least 6 characters'),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password')], 'Passwords must match')
+    .required('Confirm password is required'),
   role: Yup.string().required('Role is required'),
 });
 
@@ -21,6 +30,7 @@ function RegisterForm() {
       name: '',
       email: '',
       password: '',
+      confirmPassword: '',
       role: 'student',
     },
     validationSchema,
@@ -43,12 +53,15 @@ function RegisterForm() {
     },
   });
 
+  /** 
   return (
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'column',
+        justifyContent: 'center',
         alignItems: 'center',
+        minHeight: '100vh',
+        bgcolor: '#f5f5f5',
       }}
     >
       <Paper elevation={3} sx={{ padding: 3, width: '100%', maxWidth: 400 }}>
@@ -123,6 +136,8 @@ function RegisterForm() {
 }
 
 export default RegisterForm;
+*/
+
 /**
 import React from 'react';
 import { useFormik } from 'formik';
@@ -170,7 +185,7 @@ function RegisterForm() {
       console.log(values);
     },
   });
-
+*/
   return (
     <Box
       sx={{
@@ -255,6 +270,9 @@ function RegisterForm() {
           >
             Sign Up
           </Button>
+          {successMessage && <Alert severity="success">{successMessage}</Alert>}
+          {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+
           <Box sx={{ textAlign: 'center' }}>
             <Link component={RouterLink} to="/" variant="body2">
               Already have an account? Sign in
@@ -267,4 +285,3 @@ function RegisterForm() {
 }
 
 export default RegisterForm; 
-*/
