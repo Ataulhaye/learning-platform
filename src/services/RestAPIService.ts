@@ -42,3 +42,29 @@ export const forgotPassword = async (email: string) => {
     }
   }
 };
+
+export const getUserById = async (userId: string) => {
+  try {
+    const response = await axios.get(`${API_URL}/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data?.message || 'Error fetching user details');
+    } else {
+      throw new Error('Error fetching user details');
+    }
+  }
+};
+
+export const resetPassword = async (token: string, newPassword: string) => {
+  try {
+    const response = await axios.post(`${API_URL}/reset-password/${token}`, { token, newPassword });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(error.response.data?.message || 'Error resetting password');
+    } else {
+      throw new Error('Error resetting password');
+    }
+  }
+};
