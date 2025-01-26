@@ -5,6 +5,7 @@ import { Box, Button, TextField, Paper, Typography, Alert, Link } from '@mui/mat
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { login } from '../../services/RestAPIService';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { useAuth } from './AuthContext';
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -19,7 +20,8 @@ function LoginForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
   const { executeRecaptcha } = useGoogleReCaptcha();
-
+  const { login: authLogin } = useAuth();
+  
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -39,7 +41,8 @@ function LoginForm() {
         console.log('Login successful:', response);
         setErrorMessage(null);
         // Redirect to home page with role
-        navigate('/home', { state: { role: response.user.role } });
+        authLogin({ email: response.user.eamil, role: response.user.role });
+        navigate('/home', { state: { role: response.user.role, email: response.user.email} });
       } catch (error) {
         if (error instanceof Error) {
           setErrorMessage(error.message);

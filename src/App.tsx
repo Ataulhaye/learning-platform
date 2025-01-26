@@ -6,6 +6,7 @@ import ResetPassword from './components/authorization/ResetPassword';
 import { ThemeProvider, createTheme } from '@mui/material';
 import './App.css';
 import HomePage from './components/Home/HomePage';
+import { GardRoute } from './components/authorization/AuthContext';
 
 const theme = createTheme({
   palette: {
@@ -24,12 +25,15 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <Routes>
-          <Route path="/" element={<LoginForm />} />
+          <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route element={<GardRoute />}>
+            <Route path="/home" element={<HomePage />} />
+          </Route>
+          
         </Routes>
       </Router>
     </ThemeProvider>
