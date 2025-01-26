@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { Box, Button, TextField, Paper, Typography, Alert, Link } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { login } from '../../services/RestAPIService';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -17,7 +18,8 @@ const validationSchema = Yup.object({
 function LoginForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-  
+  const { executeRecaptcha } = useGoogleReCaptcha();
+
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -26,13 +28,18 @@ function LoginForm() {
     validationSchema,
     onSubmit: async (values) => {
       console.log(values);
+      if (!executeRecaptcha) {
+        setErrorMessage('Recaptcha not yet available');
+        return;
+      }
+
       try {
-        const response = await login(values.email, values.password);
+        const recaptchaToken = await executeRecaptcha('login');
+        const response = await login(values.email, values.password, recaptchaToken);
         console.log('Login successful:', response);
         setErrorMessage(null);
         // Redirect to home page with role
         navigate('/home', { state: { role: response.user.role } });
-        // Handle successful login (e.g., store token, redirect)
       } catch (error) {
         if (error instanceof Error) {
           setErrorMessage(error.message);
@@ -40,7 +47,6 @@ function LoginForm() {
           setErrorMessage('Login failed');
         }
         console.error('Login failed:', error);
-        // Handle login error (e.g., show error message)
       }
     },
   });
@@ -107,4 +113,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm; 
+export default LoginForm;

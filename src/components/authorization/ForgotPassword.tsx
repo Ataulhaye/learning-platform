@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { Box, Button, TextField, Paper, Typography, Alert, Link } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { forgotPassword } from '../../services/RestAPIService';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 const validationSchema = Yup.object({
     email: Yup.string()
@@ -14,6 +15,7 @@ const validationSchema = Yup.object({
 function ForgotPassword() {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const { executeRecaptcha } = useGoogleReCaptcha();
 
     const formik = useFormik({
         initialValues: {
@@ -21,8 +23,14 @@ function ForgotPassword() {
         },
         validationSchema,
         onSubmit: async (values) => {
+            if (!executeRecaptcha) {
+                setErrorMessage('Recaptcha not yet available');
+                return;
+            }
+
             try {
-                const response = await forgotPassword(values.email);
+                const recaptchaToken = await executeRecaptcha('forgotPassword');
+                const response = await forgotPassword(values.email, recaptchaToken);
                 setSuccessMessage('Password reset link sent to your email.');
                 setErrorMessage(null);
                 console.log('Forgot password successful:', response);
@@ -41,10 +49,6 @@ function ForgotPassword() {
     return (
         <Box
             sx={{
-               /** display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                */
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',

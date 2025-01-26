@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/auth'; 
 
-export const register = async (name: string, email: string, password: string, role: string = 'student') => {
+export const register = async (name: string, email: string, password: string, role: string = 'student', recaptchaToken: string) => {
   try {
-    const response = await axios.post(`${API_URL}/register`, { name, email, password, role });
+    const response = await axios.post(`${API_URL}/register`, { name, email, password, role, recaptchaToken });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -17,9 +17,9 @@ export const register = async (name: string, email: string, password: string, ro
   }
 };
 
-export const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string, recaptchaToken: string) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, { email, password });
+    const response = await axios.post(`${API_URL}/login`, { email, password, recaptchaToken });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -30,9 +30,9 @@ export const login = async (email: string, password: string) => {
   }
 };
 
-export const forgotPassword = async (email: string) => {
+export const forgotPassword = async (email: string, recaptchaToken: string) => {
   try {
-    const response = await axios.post(`${API_URL}/forgot-password`, { email });
+    const response = await axios.post(`${API_URL}/forgot-password`, { email, recaptchaToken });
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error) && error.response) {
@@ -56,9 +56,9 @@ export const getUserById = async (userId: string) => {
   }
 };
 
-export const resetPassword = async (token: string, newPassword: string) => {
+export const resetPassword = async (token: string, newPassword: string, recaptchaToken: string) => {
   try {
-    const response = await axios.post(`${API_URL}/reset-password/${token}`, { token, newPassword });
+    const response = await axios.post(`${API_URL}/reset-password/${token}`, { token, newPassword, recaptchaToken });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

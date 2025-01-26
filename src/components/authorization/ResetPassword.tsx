@@ -5,6 +5,7 @@ import { Box, Button, TextField, Paper, Typography, Alert } from '@mui/material'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import { resetPassword, getUserById } from '../../services/RestAPIService';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 const validationSchema = Yup.object({
     password: Yup.string()
@@ -17,6 +18,8 @@ const validationSchema = Yup.object({
 
 interface TokenPayload {
     userId: string;
+    iat: number;
+    exp: number;
 }
 
 function ResetPassword() {
@@ -26,6 +29,7 @@ function ResetPassword() {
     const navigate = useNavigate();
     const location = useLocation();
     const token = location.pathname.split('/').pop() || '';
+    const { executeRecaptcha } = useGoogleReCaptcha();
 
     useEffect(() => {
         const fetchEmail = async (userId: string) => {
@@ -54,8 +58,14 @@ function ResetPassword() {
         },
         validationSchema,
         onSubmit: async (values) => {
+            if (!executeRecaptcha) {
+                setErrorMessage('Recaptcha not yet available');
+                return;
+            }
+
             try {
-                const response = await resetPassword(token, values.password);
+                const recaptchaToken = await executeRecaptcha('resetPassword');
+                const response = await resetPassword(token, values.password, recaptchaToken);
                 setSuccessMessage('Password reset successful!');
                 setErrorMessage(null);
                 console.log('Password reset successful:', response);
