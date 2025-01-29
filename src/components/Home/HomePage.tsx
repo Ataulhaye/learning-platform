@@ -1,13 +1,11 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, AppBar, Toolbar } from '@mui/material';
 import { useAuth } from '../authorization/AuthContext';
 
 function HomePage() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const { role, email } = location.state || { role: '', email: '' };
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
     logout(); // Clear authentication state
@@ -27,7 +25,7 @@ function HomePage() {
       <AppBar position="static">
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Typography variant="h6">
-            {email}
+            {user?.email}
           </Typography>
           <Button
             variant="contained"
@@ -51,7 +49,7 @@ function HomePage() {
           Welcome to the Learning Platform
         </Typography>
         <Typography variant="h3" component="h2">
-          You are logged in as a {role}
+          You are logged in as a {user?.role}
         </Typography>
       </Box>
     </Box>

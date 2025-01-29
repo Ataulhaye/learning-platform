@@ -41,7 +41,7 @@ function LoginForm() {
         console.log('Login successful:', response);
         setErrorMessage(null);
         // Redirect to home page with role
-        authLogin({ email: response.user.eamil, role: response.user.role });
+        authLogin({ email: response.user.eamil, role: response.user.role }, response.token);
         navigate('/home', { state: { role: response.user.role, email: response.user.email} });
       } catch (error) {
         if (error instanceof Error) {
