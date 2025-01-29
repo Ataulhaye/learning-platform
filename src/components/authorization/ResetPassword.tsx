@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { Box, Button, TextField, Paper, Typography, Alert } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
-import { resetPassword, getUserById } from '../../services/RestAPIService';
+import { resetPassword } from '../../services/RestAPIService';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 const validationSchema = Yup.object({
@@ -18,6 +18,9 @@ const validationSchema = Yup.object({
 
 interface TokenPayload {
     userId: string;
+    email: string;
+    name: string;
+    role: string;
     iat: number;
     exp: number;
 }
@@ -32,19 +35,9 @@ function ResetPassword() {
     const { executeRecaptcha } = useGoogleReCaptcha();
 
     useEffect(() => {
-        const fetchEmail = async (userId: string) => {
-            try {
-                const userDetails = await getUserById(userId);
-                setEmail(userDetails.email);
-            } catch (error) {
-                console.error('Error fetching user details:', error);
-                setErrorMessage('Error fetching user details');
-            }
-        };
-
         try {
             const decodedToken = jwtDecode<TokenPayload>(token);
-            fetchEmail(decodedToken.userId);
+            setEmail(decodedToken.email);
         } catch (error) {
             console.error('Invalid token:', error);
             setErrorMessage('Invalid token');
