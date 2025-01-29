@@ -53,19 +53,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const login = (user: { email: string; role: string }, token: string) => {
-        Cookies.set('token', token, { expires: 7 }); // Store token in cookies with an expiration
+        Cookies.set('token', token, { expires: 7 }); 
         setIsAuthenticated(true);
         setUser(user);
-        //localStorage.setItem('isAuthenticated', 'true');
-        //localStorage.setItem('user', JSON.stringify(user));
     };
 
     const logout = () => {
         Cookies.remove('token');
         setIsAuthenticated(false);
         setUser(null);
-        //localStorage.removeItem('isAuthenticated');
-        //localStorage.removeItem('user');
     };
 
     return (
